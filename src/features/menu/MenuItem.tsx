@@ -5,11 +5,10 @@ import { addItem, getCurrentQuantityById } from "../cart/cartSlice";
 
 import DeleteItem from "../cart/DeleteItem";
 import UpdateItemQuantity from "../cart/UpdateItemQuantity";
-import { PizzaSchema } from "../../types/types";
-import { z } from "zod";
+import { PizzaItem } from "../../types/types";
 
 type MenuItemProps = {
-  pizza: z.infer<typeof PizzaSchema>;
+  pizza: PizzaItem;
 };
 
 function MenuItem({ pizza }: MenuItemProps) {

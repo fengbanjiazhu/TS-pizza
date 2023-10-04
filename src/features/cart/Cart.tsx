@@ -4,12 +4,13 @@ import CartItem from "./CartItem";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart, getCart } from "./cartSlice";
 import EmptyCart from "./EmptyCart";
+import { RootState } from "../../store";
 
 import { CartSchema } from "../../types/types";
 
 function Cart() {
   const dispatch = useDispatch();
-  const username = useSelector((state) => state.user.username);
+  const username = useSelector((state: RootState) => state.user.username);
   const cart = useSelector(getCart);
 
   const result = CartSchema.safeParse(cart);

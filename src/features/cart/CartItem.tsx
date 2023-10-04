@@ -5,7 +5,13 @@ import DeleteItem from "./DeleteItem";
 import { useSelector } from "react-redux";
 import { getCurrentQuantityById } from "./cartSlice";
 
-function CartItem({ item }) {
+import { CartItem } from "../../types/types";
+
+type CartItemProps = {
+  item: CartItem;
+};
+
+function CartItem({ item }: CartItemProps) {
   const { pizzaId, name, quantity, totalPrice } = item;
 
   const currentQuantity = useSelector(getCurrentQuantityById(pizzaId));

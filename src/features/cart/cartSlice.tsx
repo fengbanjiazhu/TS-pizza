@@ -1,16 +1,9 @@
-import { createSlice } from "@reduxjs/toolkit";
-import { CartSchema, CartItemSchema } from "../../types/types";
-import { z } from "zod";
-
-type CartAction = {
-  payload: z.infer<typeof CartItemSchema>;
-  type: string;
-};
-
-type CartTestType = z.infer<typeof CartSchema>;
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { CartItem } from "../../types/types";
+import { RootState } from "../../store";
 
 type CartType = {
-  cart: z.infer<typeof CartSchema> | [];
+  cart: CartItem[];
 };
 
 const initialState: CartType = {
@@ -21,7 +14,7 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addItem(state, action: CartAction) {
+    addItem(state, action: PayloadAction<CartItem>) {
       state.cart.push(action.payload);
     },
     deleteItem(state, action) {
@@ -30,11 +23,14 @@ const cartSlice = createSlice({
     increaseItemQuantity(state, action) {
       const item = state.cart.find((item) => item.pizzaId === action.payload);
 
+      if (!item) return;
       item.quantity++;
       item.totalPrice = item.quantity * item.unitPrice;
     },
     decreaseItemQuantity(state, action) {
       const item = state.cart.find((item) => item.pizzaId === action.payload);
+
+      if (!item) return;
 
       item.quantity--;
       item.totalPrice = item.quantity * item.unitPrice;
@@ -52,13 +48,13 @@ export const { addItem, deleteItem, increaseItemQuantity, decreaseItemQuantity, 
 
 export default cartSlice.reducer;
 
-export const getCart = (state) => state.cart.cart;
+export const getCart = (state: RootState) => state.cart.cart;
 
-export const getTotalCartQuantity = (state) =>
-  state.cart.cart.reduce((sum, item) => sum + item.quantity, 0);
+export const getTotalCartQuantity = (state: RootState) =>
+  state.cart.cart.reduce((sum: number, item: CartItem) => sum + item.quantity, 0);
 
-export const getCurrentQuantityById = (id) => (state) =>
-  state.cart.cart.find((item) => item.pizzaId === id)?.quantity ?? 0;
+export const getCurrentQuantityById = (id: number) => (state: RootState) =>
+  state.cart.cart.find((item: CartItem) => item.pizzaId === id)?.quantity ?? 0;
 
-export const getTotalCartPrice = (state) =>
-  state.cart.cart.reduce((sum, item) => sum + item.totalPrice, 0);
+export const getTotalCartPrice = (state: RootState) =>
+  state.cart.cart.reduce((sum, item: CartItem) => sum + item.totalPrice, 0);
