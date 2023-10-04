@@ -5,11 +5,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { clearCart, getCart } from "./cartSlice";
 import EmptyCart from "./EmptyCart";
 
+import { CartSchema } from "../../types/types";
+
 function Cart() {
+  const dispatch = useDispatch();
   const username = useSelector((state) => state.user.username);
   const cart = useSelector(getCart);
+
+  const result = CartSchema.safeParse(cart);
+  if (!result.success) return;
+
+  const validatedCart = result.data;
   console.log("cart:", cart);
-  const dispatch = useDispatch();
 
   const handleClearCart = () => {
     dispatch(clearCart());
@@ -24,7 +31,7 @@ function Cart() {
       <h2 className="mt-7 text-xl font-semibold">Your cart, {username}</h2>
 
       <ul className=" mt-3 divide-y divide-stone-200 border-b">
-        {cart.map((item) => (
+        {validatedCart.map((item) => (
           <CartItem item={item} key={item.pizzaId}></CartItem>
         ))}
       </ul>

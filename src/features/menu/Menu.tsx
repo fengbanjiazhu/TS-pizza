@@ -10,7 +10,6 @@ function Menu() {
 
   if (!result.success) return;
   const validateMenu = result.data;
-  // console.log(menu);
 
   return (
     <ul className="divide-y divide-stone-200 px-2">

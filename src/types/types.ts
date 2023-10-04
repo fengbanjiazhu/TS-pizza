@@ -1,11 +1,13 @@
-import { string, z } from "zod";
+import { z } from "zod";
 
-export type CartItem = {
-  pizzaId: number;
-  name: string;
-  quantity: number;
-  totalPrice: number;
-};
+export const CartItemSchema = z.object({
+  pizzaId: z.number(),
+  name: z.string(),
+  quantity: z.number(),
+  totalPrice: z.number(),
+});
+
+export const CartSchema = z.array(CartItemSchema);
 
 export const PizzaSchema = z.object({
   id: z.number(),

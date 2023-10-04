@@ -1,10 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { CartSchema, CartItemSchema } from "../../types/types";
+import { z } from "zod";
 
-interface CartState {
-  cart: [];
-}
+type CartAction = {
+  payload: z.infer<typeof CartItemSchema>;
+  type: string;
+};
 
-const initialState: CartState = {
+type CartTestType = z.infer<typeof CartSchema>;
+
+type CartType = {
+  cart: z.infer<typeof CartSchema> | [];
+};
+
+const initialState: CartType = {
   cart: [],
 };
 
@@ -12,7 +21,7 @@ const cartSlice = createSlice({
   name: "cart",
   initialState,
   reducers: {
-    addItem(state, action) {
+    addItem(state, action: CartAction) {
       state.cart.push(action.payload);
     },
     deleteItem(state, action) {
