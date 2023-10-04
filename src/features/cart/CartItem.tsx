@@ -5,7 +5,7 @@ import DeleteItem from "./DeleteItem";
 import { useSelector } from "react-redux";
 import { getCurrentQuantityById } from "./cartSlice";
 
-import { CartItem } from "../../types/types";
+import type { CartItem } from "../../types/types";
 
 type CartItemProps = {
   item: CartItem;

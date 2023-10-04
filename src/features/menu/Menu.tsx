@@ -4,12 +4,12 @@ import MenuItem from "./MenuItem";
 import { MenuSchema } from "../../types/types";
 
 function Menu() {
-  const menu = useLoaderData();
+  const menu = useLoaderData(); //这里menu是unknown
 
   const result = MenuSchema.safeParse(menu);
 
   if (!result.success) return;
-  const validateMenu = result.data;
+  const validateMenu = result.data; //这里menu是Pizza[]
 
   return (
     <ul className="divide-y divide-stone-200 px-2">

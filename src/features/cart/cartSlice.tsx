@@ -20,14 +20,14 @@ const cartSlice = createSlice({
     deleteItem(state, action) {
       state.cart = state.cart.filter((item) => item.pizzaId !== action.payload);
     },
-    increaseItemQuantity(state, action) {
+    increaseItemQuantity(state, action: PayloadAction<number>) {
       const item = state.cart.find((item) => item.pizzaId === action.payload);
 
       if (!item) return;
       item.quantity++;
       item.totalPrice = item.quantity * item.unitPrice;
     },
-    decreaseItemQuantity(state, action) {
+    decreaseItemQuantity(state, action: PayloadAction<number>) {
       const item = state.cart.find((item) => item.pizzaId === action.payload);
 
       if (!item) return;
