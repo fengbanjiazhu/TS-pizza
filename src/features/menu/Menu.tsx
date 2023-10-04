@@ -1,19 +1,27 @@
 import { useLoaderData } from "react-router-dom";
 import { getMenu } from "../../services/apiRestaurant";
 import MenuItem from "./MenuItem";
+import { MenuSchema } from "../../types/types";
 
 function Menu() {
   const menu = useLoaderData();
 
+  const result = MenuSchema.safeParse(menu);
+
+  if (!result.success) return;
+  const validateMenu = result.data;
+  // console.log(menu);
+
   return (
     <ul className="divide-y divide-stone-200 px-2">
-      {menu.map((pizza) => (
+      {validateMenu.map((pizza) => (
         <MenuItem key={pizza.id} pizza={pizza} />
       ))}
     </ul>
   );
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export async function loader() {
   const menu = await getMenu();
   return menu;

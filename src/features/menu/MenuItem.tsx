@@ -5,8 +5,14 @@ import { addItem, getCurrentQuantityById } from "../cart/cartSlice";
 
 import DeleteItem from "../cart/DeleteItem";
 import UpdateItemQuantity from "../cart/UpdateItemQuantity";
+import { PizzaSchema } from "../../types/types";
+import { z } from "zod";
 
-function MenuItem({ pizza }) {
+type MenuItemProps = {
+  pizza: z.infer<typeof PizzaSchema>;
+};
+
+function MenuItem({ pizza }: MenuItemProps) {
   const dispatch = useDispatch();
 
   const { id, name, unitPrice, ingredients, soldOut, imageUrl } = pizza;
