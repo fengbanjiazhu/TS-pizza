@@ -5,7 +5,7 @@ interface ButtonProps {
   type: "primary" | "small" | "round" | "secondary";
   to?: string;
   disabled?: boolean;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 function Button({ children, disabled, to, type, onClick }: ButtonProps) {

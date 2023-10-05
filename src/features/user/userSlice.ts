@@ -1,23 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { getAddress } from "../../services/apiGeocoding";
-import { z } from "zod";
-
-const GeoObject = z.object({
-  coords: z.object({
-    latitude: z.number(),
-    longitude: z.number(),
-  }),
-});
-
-const PositionObject = z.object({
-  position: z.object({
-    latitude: z.number(),
-    longitude: z.number(),
-  }),
-  address: z.string(),
-});
-
-type PositionSchema = z.infer<typeof PositionObject>;
+import type { User, Position } from "../../types/types";
+import { GeoSchema } from "../../types/types";
 
 function getPosition() {
   return new Promise(function (resolve, reject) {
@@ -27,11 +11,11 @@ function getPosition() {
 
 export const fetchAddress = createAsyncThunk(
   "user/fetchAddress",
-  async function (): Promise<PositionSchema> {
+  async function (): Promise<Position> {
     // 1) We get the user's geolocation position
     const positionObj = await getPosition();
 
-    const positionTest = GeoObject.parse(positionObj);
+    const positionTest = GeoSchema.parse(positionObj);
 
     const position = {
       latitude: positionTest.coords.latitude,
@@ -49,15 +33,7 @@ export const fetchAddress = createAsyncThunk(
   }
 );
 
-// type UserSlice = {
-//   username: string;
-//   status: "idle" | "loading" | "error";
-//   position: {};
-//   address: string;
-//   error: string;
-// };
-
-const initialState = {
+const initialState: User = {
   username: "",
   status: "idle",
   position: {},
@@ -75,7 +51,7 @@ const userSlice = createSlice({
   },
   extraReducers: (builder) =>
     builder
-      .addCase(fetchAddress.pending, (state, action) => {
+      .addCase(fetchAddress.pending, (state) => {
         state.status = "loading";
       })
       .addCase(fetchAddress.fulfilled, (state, action) => {
@@ -83,7 +59,7 @@ const userSlice = createSlice({
         state.address = action.payload.address;
         state.status = "idle";
       })
-      .addCase(fetchAddress.rejected, (state, action) => {
+      .addCase(fetchAddress.rejected, (state) => {
         state.status = "error";
         // state.error = action.error.message;
         state.error = "There was an error getting your address, make sure to fill this field";

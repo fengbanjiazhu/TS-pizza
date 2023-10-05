@@ -17,7 +17,6 @@ function Cart() {
   if (!result.success) return null;
 
   const validatedCart = result.data;
-  console.log("cart:", cart);
 
   const handleClearCart = () => {
     dispatch(clearCart());

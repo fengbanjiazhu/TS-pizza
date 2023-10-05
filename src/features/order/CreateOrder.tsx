@@ -10,6 +10,7 @@ import store from "../../store";
 import { fetchAddress } from "../user/userSlice";
 
 import type { RootState, AppDispatch } from "../../store";
+import { NewOrderSchema, ErrorsType, ErrorSchema } from "../../types/types";
 
 // https://uibakery.io/regex-library/phone-number
 const isValidPhone = (str: string) =>
@@ -18,7 +19,8 @@ const isValidPhone = (str: string) =>
 function CreateOrder() {
   const [withPriority, setWithPriority] = useState(false);
   const navigation = useNavigation();
-  const dispatch = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
+
   const formErrors = useActionData();
 
   const {
@@ -27,7 +29,7 @@ function CreateOrder() {
     position,
     address,
     error: errorAddress,
-  } = useSelector((state) => state.user);
+  } = useSelector((state: RootState) => state.user);
   const totalCartPrice = useSelector(getTotalCartPrice);
   const cart = useSelector(getCart);
 
@@ -88,7 +90,7 @@ function CreateOrder() {
               <Button
                 disabled={isLoadingAddress}
                 type="small"
-                onClick={(e) => {
+                onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
                   e.preventDefault();
                   dispatch(fetchAddress());
                 }}
@@ -143,15 +145,19 @@ export async function action({ request }) {
     priority: data.priority === "true",
   };
 
-  const errors = {};
+  const result = NewOrderSchema.safeParse(order);
+  if (!result.success) return;
+  const validatedOrder = result.data;
 
-  if (!isValidPhone(order.phone))
+  const errors: ErrorsType = {};
+
+  if (!isValidPhone(validatedOrder.phone))
     errors.phone = "Please give us your correct phone number. we might need it to contact you.";
 
   if (Object.keys(errors).length > 0) return errors;
 
   // if everything is ok, create new order and redirect
-  const newOrder = await createOrder(order);
+  const newOrder = await createOrder(validatedOrder);
   // Do NOT overuse
   store.dispatch(clearCart());
 

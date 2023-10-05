@@ -41,6 +41,55 @@ export const OrderSchema = z.object({
   customer: z.string(),
 });
 
-export type Order = z.infer<typeof OrderSchema>;
+export const NewOrderSchema = z.object({
+  cart: z.array(CartItemSchema),
+  customer: z.string(),
+  address: z.string(),
+  phone: z.string(),
+  position: z.string(),
+  priority: z.boolean(),
+});
 
-// const { id, status, priority, priorityPrice, orderPrice, estimatedDelivery, cart } = order;
+export type Order = z.infer<typeof OrderSchema>;
+export type NewOrder = z.infer<typeof NewOrderSchema>;
+
+// user
+export const UserSchema = z.object({
+  username: z.string(),
+  status: z.enum(["idle", "loading", "error"]),
+  position: z
+    .object({
+      latitude: z.number(),
+      longitude: z.number(),
+    })
+    .partial(),
+  address: z.string(),
+  error: z.string(),
+});
+
+export type User = z.infer<typeof UserSchema>;
+
+export const GeoSchema = z.object({
+  coords: z.object({
+    latitude: z.number(),
+    longitude: z.number(),
+  }),
+});
+
+export const PositionSchema = z.object({
+  position: z.object({
+    latitude: z.number(),
+    longitude: z.number(),
+  }),
+  address: z.string(),
+});
+
+export type Position = z.infer<typeof PositionSchema>;
+
+// errors
+export const ErrorSchema = z
+  .object({
+    phone: z.string(),
+  })
+  .partial();
+export type ErrorsType = z.infer<typeof ErrorSchema>;
