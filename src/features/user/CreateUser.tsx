@@ -9,7 +9,7 @@ function CreateUser() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  function handleSubmit(e) {
+  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!username) return;
     dispatch(updateName(username));

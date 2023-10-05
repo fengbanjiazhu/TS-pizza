@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-// pizza:{}
+// pizza
 export const PizzaSchema = z.object({
   id: z.number(),
   name: z.string(),
@@ -10,15 +10,13 @@ export const PizzaSchema = z.object({
   imageUrl: z.string(),
 });
 
-// menu: pizza[]
 export const MenuSchema = z.array(PizzaSchema);
 
-// types
 export type PizzaItem = z.infer<typeof PizzaSchema>;
 
 export type Menu = PizzaItem[];
 
-// cartItem:{}
+// cart
 export const CartItemSchema = z.object({
   pizzaId: z.number(),
   name: z.string(),
@@ -27,9 +25,22 @@ export const CartItemSchema = z.object({
   unitPrice: z.number(),
 });
 
-// cart:cartItem[]
 export const CartSchema = z.array(CartItemSchema);
 
 export type CartItem = z.infer<typeof CartItemSchema>;
 
-// id, name, unitPrice, ingredients, soldOut, imageUrl
+// order
+export const OrderSchema = z.object({
+  cart: z.array(CartItemSchema),
+  id: z.string(),
+  status: z.enum(["preparing", ""]),
+  priority: z.boolean(),
+  priorityPrice: z.number(),
+  orderPrice: z.number(),
+  estimatedDelivery: z.string().datetime(),
+  customer: z.string(),
+});
+
+export type Order = z.infer<typeof OrderSchema>;
+
+// const { id, status, priority, priorityPrice, orderPrice, estimatedDelivery, cart } = order;

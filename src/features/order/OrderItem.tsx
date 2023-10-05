@@ -1,12 +1,8 @@
 import { formatCurrency } from "../../utils/helpers";
+import type { CartItem } from "../../types/types";
 
 type OrderItemProps = {
-  item: {
-    pizzaId?: string;
-    quantity?: number;
-    name?: string;
-    totalPrice?: number;
-  };
+  item: CartItem;
   isLoadingIngredients: boolean;
   ingredients: string[] | [];
 };

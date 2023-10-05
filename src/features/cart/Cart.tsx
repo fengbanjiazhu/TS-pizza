@@ -14,7 +14,7 @@ function Cart() {
   const cart = useSelector(getCart);
 
   const result = CartSchema.safeParse(cart);
-  if (!result.success) return;
+  if (!result.success) return null;
 
   const validatedCart = result.data;
   console.log("cart:", cart);

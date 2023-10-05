@@ -1,8 +1,8 @@
-import React from "react";
 import { useSelector } from "react-redux";
+import { RootState } from "../../store";
 
 function Username() {
-  const username = useSelector((state) => state.user.username);
+  const username = useSelector((state: RootState) => state.user.username);
 
   if (!username) return null;
 

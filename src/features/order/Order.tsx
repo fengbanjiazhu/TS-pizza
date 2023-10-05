@@ -5,6 +5,7 @@ import { calcMinutesLeft, formatCurrency, formatDate } from "../../utils/helpers
 import OrderItem from "./OrderItem";
 import { useEffect } from "react";
 import UpdateOrder from "./UpdateOrder";
+import { OrderSchema } from "../../types/types";
 
 function Order() {
   const order = useLoaderData();
@@ -14,8 +15,14 @@ function Order() {
     if (!fetcher.data && fetcher.state === "idle") fetcher.load("/menu");
   }, []);
 
+  const result = OrderSchema.safeParse(order);
+
+  if (!result.success) return null;
+  const validatedOrder = result.data;
+
   // Everyone can search for all orders, so for privacy reasons we're gonna gonna exclude names or address, these are only for the restaurant staff
-  const { id, status, priority, priorityPrice, orderPrice, estimatedDelivery, cart } = order;
+  const { id, status, priority, priorityPrice, orderPrice, estimatedDelivery, cart } =
+    validatedOrder;
   const deliveryIn = calcMinutesLeft(estimatedDelivery);
 
   return (
@@ -47,18 +54,14 @@ function Order() {
       </div>
 
       <ul className="divide-y divide-stone-200 border-b border-t">
-        {cart.map(
-          (item: { pizzaId?: string; quantity?: number; name?: string; totalPrice?: number }) => (
-            <OrderItem
-              item={item}
-              key={item.pizzaId}
-              isLoadingIngredients={fetcher.state === "loading"}
-              ingredients={
-                fetcher.data?.find((el: { id: string }) => el.id === item.pizzaId).ingredients ?? []
-              }
-            ></OrderItem>
-          )
-        )}
+        {cart.map((item) => (
+          <OrderItem
+            item={item}
+            key={item.pizzaId}
+            isLoadingIngredients={fetcher.state === "loading"}
+            ingredients={fetcher.data?.find((el) => el.id === item.pizzaId).ingredients ?? []}
+          ></OrderItem>
+        ))}
       </ul>
 
       <div className="space-y-2 bg-stone-200 px-6 py-5">

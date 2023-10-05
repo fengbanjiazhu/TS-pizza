@@ -8,7 +8,9 @@ function Menu() {
 
   const result = MenuSchema.safeParse(menu);
 
-  if (!result.success) return;
+  console.log(result);
+  if (!result.success) return null;
+  // return <ErrorPage message="Something went wrong with menu, please try again later" />;
   const validateMenu = result.data; //这里menu是Pizza[]
 
   return (
