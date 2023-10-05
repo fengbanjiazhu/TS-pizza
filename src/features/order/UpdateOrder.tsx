@@ -1,8 +1,9 @@
 import Button from "../../ui/Button";
 import { useFetcher } from "react-router-dom";
 import { updateOrder } from "../../services/apiRestaurant";
+import type { Order } from "../../types/types";
 
-function UpdateOrder() {
+function UpdateOrder({ order }: { order: Order }) {
   const fetcher = useFetcher();
 
   return (
@@ -16,8 +17,10 @@ function UpdateOrder() {
 
 export default UpdateOrder;
 
-export async function action({ request, params }) {
+export async function action({ params }: { params: { orderId?: string } }) {
+  if (!params.orderId) return;
   const data = { priority: true };
+
   await updateOrder(params.orderId, data);
   return null;
 }

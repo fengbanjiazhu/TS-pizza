@@ -5,11 +5,13 @@ import { calcMinutesLeft, formatCurrency, formatDate } from "../../utils/helpers
 import OrderItem from "./OrderItem";
 import { useEffect } from "react";
 import UpdateOrder from "./UpdateOrder";
-import { OrderSchema } from "../../types/types";
+import { OrderSchema, type PizzaItem } from "../../types/types";
 
 function Order() {
   const order = useLoaderData();
   const fetcher = useFetcher();
+
+  console.log(fetcher);
 
   useEffect(function () {
     if (!fetcher.data && fetcher.state === "idle") fetcher.load("/menu");
@@ -59,7 +61,9 @@ function Order() {
             item={item}
             key={item.pizzaId}
             isLoadingIngredients={fetcher.state === "loading"}
-            ingredients={fetcher.data?.find((el) => el.id === item.pizzaId).ingredients ?? []}
+            ingredients={
+              fetcher.data?.find((el: PizzaItem) => el.id === item.pizzaId).ingredients ?? []
+            }
           ></OrderItem>
         ))}
       </ul>
@@ -78,12 +82,13 @@ function Order() {
         </p>
       </div>
 
-      {!priority && <UpdateOrder order={order}></UpdateOrder>}
+      {!priority && <UpdateOrder order={validatedOrder}></UpdateOrder>}
     </div>
   );
 }
 
-export async function loader({ params }) {
+export async function loader({ params }: { params: { orderId?: string } }) {
+  if (!params.orderId) return;
   const order = await getOrder(params.orderId);
   return order;
 }
