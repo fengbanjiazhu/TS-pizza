@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Form, redirect, useActionData, useNavigation } from "react-router-dom";
+import { ActionFunctionArgs } from "react-router-dom";
 import { createOrder } from "../../services/apiRestaurant";
 import { useDispatch, useSelector } from "react-redux";
 import { clearCart, getCart, getTotalCartPrice } from "../cart/cartSlice";
@@ -10,7 +11,7 @@ import store from "../../store";
 import { fetchAddress } from "../user/userSlice";
 
 import type { RootState, AppDispatch } from "../../store";
-import { NewOrderSchema, ErrorsType, ErrorSchema } from "../../types/types";
+import { NewOrderSchema, ErrorsType } from "../../types/types";
 
 // https://uibakery.io/regex-library/phone-number
 const isValidPhone = (str: string) =>
@@ -20,9 +21,7 @@ function CreateOrder() {
   const [withPriority, setWithPriority] = useState(false);
   const navigation = useNavigation();
   const dispatch: AppDispatch = useDispatch();
-
-  const formErrors = useActionData();
-
+  const formErrors = useActionData() as ErrorsType;
   const {
     username,
     status: addressStatus,
@@ -135,15 +134,17 @@ function CreateOrder() {
   );
 }
 
-export async function action({ request }) {
+export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const data = Object.fromEntries(formData);
 
   const order = {
     ...data,
-    cart: JSON.parse(data.cart),
+    cart: JSON.parse(data.cart as string),
     priority: data.priority === "true",
   };
+
+  console.log(order);
 
   const result = NewOrderSchema.safeParse(order);
   if (!result.success) return;
@@ -156,9 +157,7 @@ export async function action({ request }) {
 
   if (Object.keys(errors).length > 0) return errors;
 
-  // if everything is ok, create new order and redirect
   const newOrder = await createOrder(validatedOrder);
-  // Do NOT overuse
   store.dispatch(clearCart());
 
   return redirect(`/order/${newOrder.id}`);
